@@ -81,4 +81,90 @@
     ]
   });
   window.addEventListener('resize', function() { chart.resize(); });
+
+  // Visitor trend chart
+  (function() {
+    var visitorEl = document.getElementById('chart-visitor-trend');
+    if (!visitorEl) return;
+    var vChart = echarts.init(visitorEl, null, { renderer: 'svg' });
+
+    var weeks = ['04/27-05/03','05/04-05/10','05/11-05/17','05/18-05/24','05/25-05/31','06/01-06/07','06/08-06/14','06/15-06/21','06/22-06/28'];
+    var globalVisitors = [60836, 66352, 109315, 103981, 104440, 222471, 135747, 113835, 84411];
+    var offsiteApp = [3161, 3164, 4402, 4516, 4803, 17314, 8662, 5142, 3656];
+
+    vChart.setOption({
+      title: {
+        text: '巴士巡游 6/1 · 时钟广告 6/8 · 地铁广告 6/15 · 618 大促 5/31-6/10',
+        left: 'center', top: 2,
+        textStyle: { color: clrInk, fontSize: 12, fontWeight: 500, fontFamily: 'Work Sans, sans-serif' }
+      },
+      tooltip: {
+        trigger: 'axis',
+        formatter: function(params) {
+          var html = '<b>' + params[0].axisValue + '</b><br/>';
+          params.forEach(function(p) {
+            html += p.marker + ' ' + p.seriesName + ': ' + p.value.toLocaleString() + '<br/>';
+          });
+          return html;
+        }
+      },
+      legend: { data: ['全店 Global', '站外流量 APP'], bottom: 0, textStyle: { color: clrInk, fontFamily: 'Work Sans, sans-serif' }},
+      grid: { left: 60, right: 60, top: 45, bottom: 40 },
+      xAxis: {
+        type: 'category',
+        data: weeks,
+        axisLabel: { fontSize: 10, color: clrMuted, fontFamily: 'Work Sans, sans-serif' }
+      },
+      yAxis: [
+        {
+          type: 'value',
+          name: '全店',
+          nameTextStyle: { color: clrMuted, fontSize: 10 },
+          axisLabel: { fontSize: 10, color: clrMuted, formatter: function(v) { return (v/1000).toFixed(0) + 'K'; }, fontFamily: 'Work Sans, sans-serif' },
+          splitLine: { lineStyle: { color: clrRule, type: 'dashed' }}
+        },
+        {
+          type: 'value',
+          name: '站外APP',
+          nameTextStyle: { color: clrMuted, fontSize: 10 },
+          axisLabel: { fontSize: 10, color: clrMuted, formatter: function(v) { return (v/1000).toFixed(1) + 'K'; }, fontFamily: 'Work Sans, sans-serif' },
+          splitLine: { show: false }
+        }
+      ],
+      series: [
+        {
+          name: '全店 Global', type: 'bar', data: globalVisitors,
+          barWidth: '40%',
+          itemStyle: { color: clrAccent, borderRadius: [4, 4, 0, 0] },
+          markArea: {
+            silent: true,
+            itemStyle: { color: 'rgba(232,168,124,0.12)' },
+            data: [[
+              { xAxis: '06/01-06/07' },
+              { xAxis: '06/08-06/14' }
+            ]]
+          }
+        },
+        {
+          name: '站外流量 APP', type: 'line', data: offsiteApp, smooth: true,
+          yAxisIndex: 1,
+          lineStyle: { width: 2.5, color: '#E8A87C' },
+          itemStyle: { color: '#E8A87C' },
+          areaStyle: { color: { type: 'linear', x: 0, y: 0, x2: 0, y2: 1, colorStops: [{ offset: 0, color: '#E8A87C30' }, { offset: 1, color: '#E8A87C05' }]}},
+          markLine: {
+            silent: true,
+            symbol: 'none',
+            lineStyle: { color: 'rgba(15,26,92,0.35)', type: 'dashed', width: 1 },
+            label: { position: 'insideEndTop', fontSize: 9, color: clrMuted, fontFamily: 'Work Sans, sans-serif' },
+            data: [
+              { xAxis: '06/01-06/07', label: { formatter: '巴士 6/1' } },
+              { xAxis: '06/08-06/14', label: { formatter: '时钟 6/8' } },
+              { xAxis: '06/15-06/21', label: { formatter: '地铁 6/15' } }
+            ]
+          }
+        }
+      ]
+    });
+    window.addEventListener('resize', function() { vChart.resize(); });
+  })();
 })();
