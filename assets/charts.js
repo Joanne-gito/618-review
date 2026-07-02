@@ -139,10 +139,9 @@
           markArea: {
             silent: true,
             itemStyle: { color: 'rgba(232,168,124,0.12)' },
-            data: [[
-              { xAxis: '06/01-06/07' },
-              { xAxis: '06/15-06/21' }
-            ]]
+            data: [
+              [{ coord: [5, 'max'] }, { coord: [7, 0] }]
+            ]
           }
         },
         {
